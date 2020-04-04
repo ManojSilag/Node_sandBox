@@ -14,9 +14,9 @@ const incTime = () => {
 console.log(`setting a ${waitTime / 1000} second delay`);
 
 const timerFineshed = () => {
-    process.stdout.clearLine();
-    process.stdout.cursorTo(0);
-    // process.stdout.write(`waiting......${p}%`);
+  process.stdout.clearLine();
+  process.stdout.cursorTo(0);
+  // process.stdout.write(`waiting......${p}%`);
   console.log("done");
   clearInterval(interval);
 };
