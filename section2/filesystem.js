@@ -1,4 +1,8 @@
-const fs = require("fs");
-// fs.writeFileSync("notes.txt", "filesystem.js");
+const validator = require('validator');
+const notes = require("./notes");
+const chalk = require('chalk');
 
-fs.appendFileSync("notes.txt", " It was appended");
+// console.log(notes());
+// console.log(validator.isURL('https//vsdd.com'));
+
+console.log(chalk.greenBright.bold.inverse("sucess....!!"));
