@@ -1,22 +1,48 @@
 const fs = require("fs");
-
-const getNotes = () => {
-  return "Your notes are.......";
-};
+const chalk = require("chalk");
 
 const addNotes = (title, body) => {
   const notes = loadNotes();
-  const duplicateNotes = notes.filter((data) => {
-   return data.title === title;
-  });
+  const duplicateNote = notes.find((note) => note.title === title);
 
-  console.log(duplicateNotes);
-
-  if (duplicateNotes.length === 0) {
+  if (!duplicateNote) {
     notes.push({ title: title, body: body });
     saveNote(notes);
+    console.log(chalk.green.inverse("Note added"));
   } else {
-    console.log("Duplicate data");
+    console.log(chalk.red.inverse("Duplicate Note"));
+  }
+};
+
+const removeNotes = (title) => {
+  const notes = loadNotes();
+  const newNoteList = notes.filter((data) => {
+    return data.title !== title;
+  });
+  // console.log(newNoteList);
+  if (JSON.stringify(notes) === JSON.stringify(newNoteList)) {
+    console.log(chalk.red.inverse("Note not found....."));
+  } else {
+    saveNote(newNoteList);
+    console.log(chalk.green.inverse("Note removed....."));
+  }
+};
+
+const listNotes = () => {
+  const notes = loadNotes();
+  notes.forEach((note) => {
+    console.log(chalk.grey("Title:", note.title));
+  });
+};
+
+const readNote = (title) => {
+  const notes = loadNotes();
+  const Note = notes.find((note) => note.title === title);
+  if (Note) {
+    console.log(chalk.white.inverse(Note.title));
+    console.log(chalk.white(Note.body));
+  } else {
+    console.log(chalk.red.inverse("Note not found"));
   }
 };
 
@@ -41,6 +67,8 @@ const saveNote = (notes) => {
 };
 
 module.exports = {
-  getNotes: getNotes,
   addNotes: addNotes,
+  removeNotes: removeNotes,
+  listNotes: listNotes,
+  readNote: readNote,
 };
