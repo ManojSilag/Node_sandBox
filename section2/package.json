@@ -5,13 +5,13 @@
   "main": "filesystem.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+    
   },
   "author": "manoj",
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.0.0",
     "nodeman": "^1.1.2",
-    "validator": "^13.0.0",
-    "yargs": "^15.3.1"
+    "validator": "^13.0.0"
   }
 }
