@@ -1,35 +1,30 @@
-const request = require("request");
 const geoCode = require("./util/geocode");
-// const url =
-//   "http://api.weatherstack.com/current?access_key=aacdc3dd6dc3f5cc5a82899a8c519502&query=37.8267,-122.4233&units=f";
+const forcast = require("./util/forecast");
+const place = process.argv[2]
+// console.log('dev: place', place)
 
-// request({ url, json: true }, (error, response) => {
-//   const {
-//     temperature,
-//     feelslike,
-//     weather_descriptions,
-//   } = response.body.current;
-//   console.log(
-//     ` It is ${weather_descriptions[0]}. It is currently ${temperature} F out.But it feels like ${feelslike} F outside.`
-//   );
-// });
-
-// const geoCodeUrl =
-//   "https://api.mapbox.com/geocoding/v5/mapbox.places/Los%20Angeles.json?access_token=pk.eyJ1IjoibWFub2pzIiwiYSI6ImNrOTJkczZsNzAzdGUzbW84OHFxOHl6NjIifQ.p-zoFsz8pbhLKv5h8abrSw&limit=1";
-// request({ url: geoCodeUrl, json: true }, (error, response) => {
-//   const { center } = response.body.features[0];
-//   console.log(`latitude: ${center[1]} and longitude: ${center[0]}`);
-// });
-
-
-
-geoCode("Ahmednagar", (error, data) => {
+if(place){
+geoCode(place, (error, data) => {
   if (error) {
-    console.log(error);
+    return console.log(error);
   } else {
-    console.log(data);
-    console.log(`latitude: ${data.center[1]} and longitude: ${data.center[0]}`);
+    // console.log(data);
+    // console.log(`latitude: ${data.center[1]} and longitude: ${data.center[0]}`);
+    const { place_name } = data;
+
+    forcast(data.center[1], data.center[0], (error, data) => {
+      // if (error) {
+      //   return console.log("Error", error);
+      // } else {
+      //   const { temperature, feelslike, weather_descriptions } = data;
+      //   console.log(
+      //     ` It is ${weather_descriptions[0]}. It is currently ${temperature} F out.But it feels like ${feelslike} F outside. In ${place_name}`
+      //   );
+      // }
+    });
   }
-  //
-  //  
 });
+}else{
+  console.log('Please provide location');
+  
+}
