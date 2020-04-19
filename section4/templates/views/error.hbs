@@ -2,13 +2,15 @@
 <html lang="en">
 
 <head>
-    <title>Help</title>
+    <title>Error</title>
     <link rel="stylesheet" href="/css/style.css" />
 </head>
 
 <body>
-    <h1>{{title}}</h1>
-    <p>By: {{name}}</p>
+    {{>header}}
+    <p>msg: {{message}}</p>
+    {{>footer}}
+
 </body>
 <script src="/js/app.js"></script>
 
