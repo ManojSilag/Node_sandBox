@@ -2,6 +2,8 @@ const path = require("path");
 const express = require("express");
 const hbs = require("hbs");
 const app = express();
+const geoCode = require("./util/geocode");
+const forecast = require("./util/forecast");
 
 // console.log(__dirname);
 // console.log(path.join(__dirname, '../public/'));
@@ -41,11 +43,50 @@ app.get("/help", (req, res) => {
 });
 
 app.get("/weather", (req, res) => {
-  res.send({
-    forecast: "12 F",
-    location: "Ahmednagar",
+  if (!req.query.address) {
+    return res.send({
+      Error: "please provide address",
+    });
+  }
+
+  const address = req.query.address;
+  geoCode(address, (error, data) => {
+    if (error) {
+      return res.send({
+        Error: "error",
+      });
+    } else {
+      const { place_name } = data;
+      forecast(data.center[1] = 0, data.center[0] = 0, (error, data) => {
+        if (error) {
+          return res.send({
+            Error: "error",
+          });
+        } else {
+          const { temperature, feelslike, weather_descriptions } = data;
+          res.send({
+            forecast: `${temperature} F`,
+            location: place_name,
+            address: address,
+          });
+        }
+      });
+    }
   });
 });
+
+app.get("/product", (req, res) => {
+  if (!req.query.search) {
+    res.send({
+      error: "you have error",
+    });
+  } else {
+    res.send({
+      products: [],
+    });
+  }
+});
+
 app.get("/help/*", (req, res) => {
   res.render("error", {
     message: "Help article not found",
