@@ -57,7 +57,7 @@ app.get("/weather", (req, res) => {
       });
     } else {
       const { place_name } = data;
-      forecast(data.center[1] = 0, data.center[0] = 0, (error, data) => {
+      forecast((data.center[1] = 0), (data.center[0] = 0), (error, data) => {
         if (error) {
           return res.send({
             Error: "error",
