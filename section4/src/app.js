@@ -4,6 +4,7 @@ const hbs = require("hbs");
 const app = express();
 const geoCode = require("./util/geocode");
 const forecast = require("./util/forecast");
+const port = process.env.PORT || 3000;
 
 // console.log(__dirname);
 // console.log(path.join(__dirname, '../public/'));
@@ -31,7 +32,7 @@ app.get("", (req, res) => {
 app.get("/about", (req, res) => {
   res.render("about", {
     title: "about",
-    name: "sagar",
+    name: "VARMA",
   });
 });
 
@@ -99,6 +100,6 @@ app.get("*", (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("Server is running o port 3000");
+app.listen(port, () => {
+  console.log(`Server is running o port ${port}`);
 });
