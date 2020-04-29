@@ -2,9 +2,21 @@ const express = require("express");
 require("./db/mongoose");
 const userRouter = require("./routers/users");
 const taskRouter = require("./routers/tasks");
-
+const auth = require("../src/middleware/auth");
 const app = express();
 const port = process.env.PORT || 3000;
+
+// app.use((req, res, next) => {
+//   if (req.method === "GET") {
+//     res.send("GET REQuest disabled");
+//   } else {
+//     next();
+//   }
+// });
+
+// app.use((req, res, next) => {
+//   res.status(503).send("Site Under Maintanance");
+// });
 
 app.use(express.json());
 app.use(userRouter);
@@ -33,4 +45,4 @@ const myFunction = async () => {
   const data = jwt.verify(token, "thisIsmyNewLearn");
   console.log("dev: myFunction -> data", data);
 };
-myFunction();
+// myFunction();
