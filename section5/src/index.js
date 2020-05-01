@@ -45,3 +45,14 @@ const jwt = require("jsonwebtoken");
 //   console.log("dev: myFunction -> data", data);
 // };
 // // myFunction();
+const Task = require('./models/task');
+// const User = require('./models/user');
+
+// const main = async() =>{
+//   const task = await Task.findById('5eabbfd540ad13154a1984a1');
+//   await task.populate('owner').execPopulate();
+//   console.log('dev: main -> task', task)
+  
+// }
+
+// main()
