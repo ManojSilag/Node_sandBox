@@ -26,7 +26,7 @@ test("Should convert 0 C to 32 F", () => {
 
 test("Async test demo", (done) => {
   setTimeout(() => {
-    expect(1).toBe(2);
+    expect(1).toBe(1);
     done();
   }, 2000);
 });
