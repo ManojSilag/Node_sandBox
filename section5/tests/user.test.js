@@ -1,26 +1,9 @@
 const request = require("supertest");
-const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
 const app = require("../src/app");
 const User = require("../src/models/user");
+const { userOne, UserOneId, setUpDatabase } = require("./fixtures/db");
 
-const UserOneId = new mongoose.Types.ObjectId();
-const userOne = {
-  _id: UserOneId,
-  name: "Mike",
-  email: "mike@gmail.com",
-  password: "mike123",
-  tokens: [
-    {
-      token: jwt.sign({ _id: UserOneId }, process.env.JWT_SECRET),
-    },
-  ],
-};
-
-beforeEach(async () => {
-  await User.deleteMany();
-  await new User(userOne).save();
-});
+beforeEach(setUpDatabase);
 
 test("Should signup a new user", async () => {
   const response = await request(app)
@@ -112,30 +95,24 @@ test("should upload avtar image", async () => {
   expect(user.avatar).toEqual(expect.any(Buffer));
 });
 
-test("should update valid the user field", async() => {
-    const response =  await request(app)
+test("should update valid the user field", async () => {
+  const response = await request(app)
     .patch("/users/me")
     .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
     .send({
       name: "Miketwo",
     })
     .expect(200);
-
-    const user = await User.findById(response.body._id);
-    expect(user.name).toBe("Miketwo")
+  const user = await User.findById(response.body._id);
+  expect(user.name).toBe("Miketwo");
 });
 
-test("should not update invalid user field", async() => {
-  const response =  await request(app)
-  .patch("/users/me")
-  .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
-  .send({
-    _id: 12333233334,
-  })
-  .expect(400);
-
-  // console.log(response.body);
-  
-  // const user = await User.findById(response.body._id);
-  // expect(user.name).toBe("Miketwo")
+test("should not update invalid user field", async () => {
+  const response = await request(app)
+    .patch("/users/me")
+    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .send({
+      _id: 12333233334,
+    })
+    .expect(400);
 });
