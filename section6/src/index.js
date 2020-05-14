@@ -3,7 +3,10 @@ const path = require("path");
 const express = require("express");
 const socketio = require("socket.io");
 const Filter = require("bad-words");
-const { generateMessage } = require("./utils/messages");
+const {
+  generateMessage,
+  generateLocationMessage,
+} = require("./utils/messages");
 
 const app = express();
 const server = http.createServer(app);
@@ -17,8 +20,17 @@ app.use(express.static(publicDirectoryPath));
 io.on("connection", (socket) => {
   console.log("new io connection");
 
-  socket.emit("message", generateMessage("Welcome!!!"));
-  socket.broadcast.emit("message", generateMessage("A new user has joined"));
+  socket.on("join", ({ username, room }) => {
+    socket.join(room);
+
+    socket.emit("message", generateMessage("Welcome!!!"));
+    socket.broadcast
+      .to(room)
+      .emit("message", generateMessage(`${username} has joined`));
+
+    // io.to.emit -> to everyone in room
+    //socket.brodcast.to.emit ->to everyone in room except self in room
+  });
 
   socket.on("sendMessage", (message, callback) => {
     const filter = new Filter();
@@ -31,9 +43,11 @@ io.on("connection", (socket) => {
 
   socket.on("sendLocation", (message, callback) => {
     const { latitude, longitude } = message;
-    socket.emit(
+    io.emit(
       "LocationMessage",
-      `https://google.com/maps?q=${latitude},${longitude}`
+      generateLocationMessage(
+        `https://google.com/maps?q=${latitude},${longitude}`
+      )
     );
 
     callback("Location Shared!!");
