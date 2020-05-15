@@ -14,25 +14,28 @@ const locationTemplate = document.querySelector("#locationmess-template")
 const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
-
+//----------------------------------------------------//
 socket.on("message", (data) => {
   console.log(data);
   const html = Mustache.render(messageTemplate, {
+    username: data.username,
     message: data.text,
     createdAt: moment(data.createdAt).format("h:mm a"),
   });
   messgaes.insertAdjacentHTML("beforebegin", html);
 });
 
+//----------------------------------------------------//
 socket.on("LocationMessage", (locationmessgaes) => {
   const html = Mustache.render(locationTemplate, {
+    username: locationmessgaes.username,
     location: locationmessgaes.url,
     createdAt: moment(locationmessgaes.createdAt).format("h:mm a"),
   });
   messgaes.insertAdjacentHTML("beforebegin", html);
   console.log(locationmessgaes);
 });
-
+//--------------------------------------------------//
 button.addEventListener("click", (e) => {
   e.preventDefault();
   const value = input.value;
@@ -64,5 +67,9 @@ send_location.addEventListener("click", () => {
   });
 });
 
-
-socket.emit("join", { username, room })
+socket.emit("join", { username, room }, (error) => {
+  if (error) {
+    alert(error);
+    location.href = "/";
+  }
+});
