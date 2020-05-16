@@ -9,20 +9,47 @@ const messgaes = document.querySelector("#messages");
 const messageTemplate = document.querySelector("#message-template").innerHTML;
 const locationTemplate = document.querySelector("#locationmess-template")
   .innerHTML;
+const sidebartemplate = document.querySelector("#sidebar-template").innerHTML;
 
 //Options
 const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
+
+const autoScroll = () => {
+  // New Message
+  const newMessage = messgaes.lastElementChild;
+  //Height of the new Message
+  const newMessageStyle = getComputedStyle(newMessage);
+  const newMessageMargin = parseInt(newMessageStyle.marginBottom);
+  const newMessageHeight = newMessage.offsetHeight + newMessageMargin;
+
+  //Visible height
+  const visibleHeight = messgaes.offsetHeight;
+  console.log("dev: autoScroll -> visibleHeight", visibleHeight);
+
+  //Height of messages container
+  const containerHeight = messgaes.scrollHeight;
+  console.log("dev: autoScroll -> containerHeight", containerHeight);
+
+  //How far have I scrolled
+  const scrollOffset = messgaes.scrollTop + visibleHeight;
+  console.log("dev: autoScroll -> scrollOffset", scrollOffset);
+
+  if (containerHeight - newMessageHeight <= scrollOffset) {
+    messgaes.scrollTop = messgaes.scrollHeight;
+  }
+};
+
 //----------------------------------------------------//
 socket.on("message", (data) => {
-  console.log(data);
   const html = Mustache.render(messageTemplate, {
     username: data.username,
     message: data.text,
     createdAt: moment(data.createdAt).format("h:mm a"),
   });
-  messgaes.insertAdjacentHTML("beforebegin", html);
+  messgaes.insertAdjacentHTML("beforeend", html);
+  autoScroll();
 });
 
 //----------------------------------------------------//
@@ -32,10 +59,21 @@ socket.on("LocationMessage", (locationmessgaes) => {
     location: locationmessgaes.url,
     createdAt: moment(locationmessgaes.createdAt).format("h:mm a"),
   });
-  messgaes.insertAdjacentHTML("beforebegin", html);
-  console.log(locationmessgaes);
+  messgaes.insertAdjacentHTML("beforeend", html);
+  autoScroll();
 });
 //--------------------------------------------------//
+socket.on("roomData", ({ room, users }) => {
+  console.log(room);
+  console.log(users);
+  const html = Mustache.render(sidebartemplate, {
+    room,
+    users,
+  });
+  const sidebar = document.querySelector("#sidebar");
+  sidebar.innerHTML = html;
+});
+
 button.addEventListener("click", (e) => {
   e.preventDefault();
   const value = input.value;
@@ -47,7 +85,6 @@ button.addEventListener("click", (e) => {
     if (error) {
       return console.log(error);
     }
-    console.log("The message was diliverd");
   });
 });
 
